@@ -34,6 +34,7 @@ Frontend integration will be added in the next development phase.
 ```bash
 git clone https://github.com/samrat-ghosh-007/GLOF-Sentinel.git
 cd GLOF-Sentinel
+cd Glof-Backend
 ```
 
 ### 2️⃣ Install dependencies
