@@ -28,8 +28,12 @@ userSchema.pre('save', async function () {
   }
 });
 
+
 userSchema.methods.comparePassword = async function (pass) {
-  return await bcrypt.compare(pass, this.password);
+  if (!pass || !this.password) {
+    return false; 
+  }
+  return await bcrypt.compare(String(pass), String(this.password));
 };
 
 module.exports = mongoose.model('User', userSchema);
