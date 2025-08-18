@@ -91,7 +91,7 @@ GLOF-Sentinel/
 ## ⚡ Getting Started
 ### 🔧 Backend Setup
 ```bash
-cd backend
+cd Updated Glof-Backend
 npm install
 ```
 Create a `.env` file and add Environemental Variable, then run: 
@@ -101,7 +101,7 @@ npm run dev
 
 ### 🎨 Frontend Setup
 ```bash
-cd frontend
+cd Glof-Frontend
 npm install
 npm run dev
 ```
