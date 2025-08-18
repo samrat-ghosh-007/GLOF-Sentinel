@@ -1,32 +1,67 @@
-# 🌊 GLOF Early Warning System – Backend
+# 🌊 GLOF Sentinel Backend (MVP)
 
-This is the backend for the **Glacial Lake Outburst Flood (GLOF) Early Warning System**, built for the **Zeros Arena Hackathon**.
-
-It handles **data storage**, **alert logic**, and **API endpoints** for the system.  
-
-Frontend integration will be added in the next development phase.  
+A backend service for Glacial Lake Outburst Flood (GLOF) Early Warning & Monitoring, built with Node.js, Express, and MongoDB.
+This MVP collects lake data, integrates weather APIs, assesses risks, and exposes RESTful APIs for frontend applications.
+It also alerts registered users and NGOs (from CSV database) based on their location when risk levels are high.
 
 ---
 
-## 📌 Features (Current Progress – Backend MVP)
-- 🌐 REST API with Express.js  
-- 🗄 MongoDB for data storage (Atlas supported)  
-- 🔑 JWT-based authentication  
-- 📧 Email alerts to registered contacts when risk is detected  
-- 🔍 API endpoints for testing with Postman  
-- 📦 Environment variables for secure configuration  
+## 📌 Features 
+-✅ RESTful API for lake monitoring and alerts
+
+-✅ MongoDB models for lakes and users
+
+-✅ NGO Alerting System → NGOs from CSV are matched by location and warned of potential GLOF threats
+
+-✅ Periodic update of weather & lake data (via cron jobs)
+
+-✅ Risk assessment logic (based on temperature, pressure)
+
+-✅ Authentication with JWT (Register, Login)
+
+-✅ Role-based access (Admin/User)
+
+-✅ CSV-based initial dataset of Indian glacial lakes
+
 
 ---
 
 ## 🛠 Tech Stack
-- **Node.js** – Runtime environment  
-- **Express.js** – Web framework  
-- **MongoDB Atlas** – Cloud database  
-- **Mongoose** – ODM for MongoDB  
-- **Nodemailer** – For sending alert emails  
-- **JWT** – Authentication  
+-Node.js + Express.js (Backend framework)
+
+-MongoDB Atlas (Database)
+
+-Mongoose (ODM)
+
+-JWT Authentication
+
+-Node-Cron (Scheduled updates)
+
+-Axios (External API calls)
+
+-CSV Parser (for NGO and lake dataset handling)
 
 ---
+
+## 📂 Project Structure
+
+```graphql
+Updated Glof-Backend/
+ ├── config/        # DB & environment setup
+ ├── controllers/   # API logic
+ ├── middleware/    # Auth middleware
+ ├── models/        # MongoDB schemas
+ ├── routes/        # API routes
+ ├── services/      # External API handlers + NGO alert service
+ ├── data/          # lakes.csv, ngos.csv (initial datasets)
+ ├── seed/          # creating db collection from csv file
+ ├── .env           # Environmental Variables
+ ├── .gitignore     # files/folders which were not pushed 
+ ├── server.js      # Entry point
+ ├── package-lock.json
+ ├── package.json
+ └── README.md
+```
 
 ## ⚙️ Setup Instructions
 
@@ -34,7 +69,7 @@ Frontend integration will be added in the next development phase.
 ```bash
 git clone https://github.com/samrat-ghosh-007/GLOF-Sentinel.git
 cd GLOF-Sentinel
-cd Glof-Backend
+cd Updated Glof-Backend
 ```
 
 ### 2️⃣ Install dependencies
@@ -43,10 +78,8 @@ npm install
 ```
 
 ### 3️⃣ Configure environment variables
-Copy `.env.example` to `.env`:
-```bash
-cp .env.example .env
-```
+Create a .env file
+
 Fill in the values in `.env` with your actual credentials.
 `.env.example:`
 ```ini
@@ -54,6 +87,7 @@ MONGO_URI=your-mongodb-connection-uri
 JWT_SECRET=your-jwt-secret-key
 ALERT_EMAIL=your-email-address-for-alerts
 ALERT_EMAIL_PASS=app-specific-password
+OPENWEATHER_API_KEY=your-openweather-api-key
 ```
 ### 4️⃣ Run the backend locally
 ```bash
@@ -70,49 +104,24 @@ http://localhost:5000
 
 ### Auth Routes
 
-| Method | Endpoint              | Description                      | Auth Required  | Role |
-|--------|-----------------------|----------------------------------|----------------|------|
-| POST   | `/api/auth/register`  | Register a User                  | No             | ---- |
-| POST   | `/api/auth/login`     | Login & get Token                | No             | ---- |
-| DELETE | `/api/auth/verify`    | Verify JWT token & get user info | Yes            | Any  |
+| Method | Endpoint              | Description                      | Auth Required  |
+|--------|-----------------------|----------------------------------|----------------|
+| POST   | `/api/auth/register`  | Register a User                  | No             |
+| POST   | `/api/auth/login`     | Login & get Token                | No             |
+
 
 ### Lake Management
 
-| Method | Endpoint              | Description                      | Auth Required  | Role  |
-|--------|-----------------------|----------------------------------|----------------|-------|
-| GET    | `/api/lakes`          | Get all lake                     | Yes            | Any   |
-| GET    | `/api/lakes/:id`      | Get lake by ID                   | Yes            | Any   |
-| POST   | `/api/lakes`          | Create a new lake                | Yes            | Admin |
-| PATCH  | `/api/lakes/:id`      | Update lake details              | Yes            | Admin |
-| DELETE | `/api/lakes/:id`      | Delete lake                      | Yes            | Admin |
+| Method | Endpoint              | Description                      | Auth Required  |
+|--------|-----------------------|----------------------------------|----------------|
+| GET    | `/api/lakes`          | Get all lake                     | Yes            |
 
 ### Alert Routes
 
 | Method | Endpoint              | Description                         | Auth Required  | Role  |
 |--------|-----------------------|-------------------------------------|----------------|-------|
 | GET    | `/api/alerts`         | Get all alerts                      | No             | ----- |
-| POST   | `/api/alerts/tick`    | Simulate lake data & trigger alerts | Yes            | Admin |
 
----
-
-## 📂 Project Structure
-```bash
-Glof-Backend/
-│── config/    
-│── controller/
-│── middleware/
-│── models/
-│── routes/
-│── utils/
-│── .env
-│── .env.example
-│── .gitignore
-│── app.js
-│── package-lock.json
-│── package.json
-│── server.js
-└── README.md
-```
 
 ---
 
