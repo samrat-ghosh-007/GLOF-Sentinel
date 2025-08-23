@@ -3,6 +3,9 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const cron = require('node-cron');
+const path = require('path');
+
+
 
 const connectDB = require('./config/db');
 const updateLakesCore = require('./services/lakeUpdater');
@@ -15,6 +18,13 @@ connectDB();
 
 app.use(cors());
 app.use(express.json());
+
+app.use(express.static(path.join(__dirname, 'Glof-Frontend/build')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'Glof-Frontend/build', 'index.html'));
+});
+
 
 
 const seedRecipients = require('./seed/seedRecipients');
@@ -38,6 +48,7 @@ cron.schedule('*/30 * * * *', async () => {
 // Start Server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
 
 
 async function shutdown(signal) {
