@@ -8,8 +8,8 @@ const userSchema = new mongoose.Schema({
   isVerified: { type: Boolean, default: false },
   otp: String,
   otpExpiry: Date,
-  resetOtp: String,        // Add this field
-  resetOtpExpiry: Date,    // Add this field
+  resetOtp: String,        
+  resetOtpExpiry: Date
 });
 
 module.exports = mongoose.model('User', userSchema);

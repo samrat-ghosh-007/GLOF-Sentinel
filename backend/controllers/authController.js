@@ -4,9 +4,8 @@ const { body, validationResult } = require('express-validator');
 const User = require('../models/User');
 const { sendEmail } = require('../services/emailService'); 
 
-// REGISTER - create user with OTP and send verification email
+
 exports.register = [
-  // Input validation middleware
   body('name').notEmpty().withMessage('Name is required'),
   body('email').isEmail().withMessage('Enter a valid email'),
   body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
@@ -35,7 +34,7 @@ exports.register = [
         password: hashedPassword,
         state,
         otp,
-        otpExpiry: Date.now() + 10 * 60 * 1000, // 10 minutes expiry
+        otpExpiry: Date.now() + 10 * 60 * 1000, 
         isVerified: false,
       });
 
@@ -85,7 +84,7 @@ exports.verifyOtp = async (req, res) => {
   }
 };
 
-// LOGIN with name in JWT token
+// LOGIN
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -151,7 +150,7 @@ exports.resendOtp = async (req, res) => {
   }
 };
 
-// FORGOT PASSWORD - send OTP for password reset
+// FORGOT PASSWORD 
 exports.forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
@@ -184,7 +183,7 @@ exports.forgotPassword = async (req, res) => {
   }
 };
 
-// RESET PASSWORD - verify OTP and update password
+// RESET PASSWORD 
 exports.resetPassword = async (req, res) => {
   try {
     const { email, otp, newPassword } = req.body;
