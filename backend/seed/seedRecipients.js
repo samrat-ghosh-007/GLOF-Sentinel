@@ -1,12 +1,7 @@
-require('dotenv').config();
-const connectDB = require('../config/db');
 const Recipient = require('../models/Recipient');
 
 const seedRecipients = async () => {
   try {
-    
-    await connectDB();
-
    
     await Recipient.deleteMany({});
     console.log('Old recipients removed');
@@ -252,7 +247,3 @@ const seedRecipients = async () => {
 };
 
 module.exports=seedRecipients;
-
-
-     
-  

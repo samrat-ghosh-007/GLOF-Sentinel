@@ -32,9 +32,12 @@ function Support() {
 >
   Overview
 </Link>
-          <a href="#" className="text-white font-medium px-4 py-2 rounded-md border border-transparent hover:border-cyan-300 hover:bg-cyan-500/20 transition">
-            Recent Alerts
-          </a>
+         <Link 
+              to="/recent-alerts" 
+              className="text-white font-medium px-4 py-2 rounded-md border border-transparent hover:border-cyan-300 hover:bg-cyan-500/20 transition"
+            >
+              Recent Alerts
+        </Link>
           <Link
             to="/historical-reports"
             className="text-white font-medium px-4 py-2 rounded-md border border-transparent hover:border-cyan-300 hover:bg-cyan-500/20 transition"

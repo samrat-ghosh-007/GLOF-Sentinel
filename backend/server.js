@@ -1,33 +1,31 @@
+require('dotenv').config();
 const express = require('express');
-const dotenv = require('dotenv');
-const cors=require('cors');
-const connectDB = require('./config/db');
-const cron = require('node-cron');
-const updateLakesCore = require('./services/lakeUpdater');
+const cors = require('cors');
 const mongoose = require('mongoose');
+const cron = require('node-cron');
 
-
-
-dotenv.config();
-
-connectDB();
+const connectDB = require('./config/db');
+const updateLakesCore = require('./services/lakeUpdater');
 
 const app = express();
+
+// Connect to MongoDB
+connectDB();
+
+// Middleware
 app.use(cors());
 app.use(express.json());
 
+// Seed initial data (optional)
 const seedRecipients = require('./seed/seedRecipients');
-seedRecipients();  
+seedRecipients();
 
-
-
-// Routes
+// API routes
 app.use('/api/lakes', require('./routes/lakeRoutes'));
 app.use('/api/alerts', require('./routes/alertRoutes'));
 app.use('/api/auth', require('./routes/authRoutes'));
 
-
-
+// Scheduled task: run every 30 minutes
 cron.schedule('*/30 * * * *', async () => {
   try {
     console.log('Running scheduled lake update...');
@@ -38,19 +36,16 @@ cron.schedule('*/30 * * * *', async () => {
   }
 });
 
-
+// Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
-
-process.on('SIGINT', async () => {
-  console.log('Shutting down (SIGINT)...');
+// Graceful shutdown on SIGINT or SIGTERM
+async function shutdown(signal) {
+  console.log(`Shutting down (${signal})...`);
   await mongoose.connection.close();
   process.exit(0);
-});
+}
 
-process.on('SIGTERM', async () => {
-  console.log('Shutting down (SIGTERM)...');
-  await mongoose.connection.close();
-  process.exit(0);
-});
+process.on('SIGINT', () => shutdown('SIGINT'));
+process.on('SIGTERM', () => shutdown('SIGTERM'));
