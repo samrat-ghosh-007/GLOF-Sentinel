@@ -8,7 +8,7 @@ function RecentAlert() {
   useEffect(() => {
     const fetchAlerts = async () => {
       try {
-        const response = await axios.get("https://glof-sentinel-backend.onrender.com/api/alerts");
+        const response = await axios.get("/api/alerts");
         setAlerts(response.data);
       } catch (error) {
         console.error("Error fetching alerts:", error);

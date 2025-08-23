@@ -19,11 +19,7 @@ connectDB();
 app.use(cors());
 app.use(express.json());
 
-app.use(express.static(path.join(__dirname, 'Glof-Frontend/dist')));
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'Glof-Frontend/dist', 'index.html'));
-});
 
 
 
@@ -34,6 +30,12 @@ seedRecipients();
 app.use('/api/lakes', require('./routes/lakeRoutes'));
 app.use('/api/alerts', require('./routes/alertRoutes'));
 app.use('/api/auth', require('./routes/authRoutes'));
+
+// app.use(express.static(path.join(__dirname, 'Glof-Frontend/dist')));
+
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, 'Glof-Frontend/dist', 'index.html'));
+// });
 
 cron.schedule('*/30 * * * *', async () => {
   try {
