@@ -1,4 +1,4 @@
-const govtDataService = require('./govtDataService');
+const govtDataService = require('./govtDataService.js');
 const alertService = require('./alertService');
 const Lake = require('../models/Lake');
 

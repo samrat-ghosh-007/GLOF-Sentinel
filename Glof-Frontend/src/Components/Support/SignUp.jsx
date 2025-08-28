@@ -47,7 +47,7 @@ function SignUp() {
       return;
     }
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/register", {
+      const res = await axios.post("/api/auth/register", {
         name: fullName,
         email,
         password,
@@ -78,7 +78,7 @@ function SignUp() {
       return;
     }
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/verify-otp", {
+      const res = await axios.post("/api/auth/verify-otp", {
         userId,
         otp: verificationCode,
       });
@@ -107,7 +107,7 @@ function SignUp() {
     setIsResending(true);
     setResendMessage("");
     try {
-      await axios.post("http://localhost:5000/api/auth/resend-otp", { email });
+      await axios.post("/api/auth/resend-otp", { email });
       setResendMessage("OTP has been resent. Please check your email.");
     } catch (error) {
       setResendMessage("Failed to resend OTP. Please try again.");

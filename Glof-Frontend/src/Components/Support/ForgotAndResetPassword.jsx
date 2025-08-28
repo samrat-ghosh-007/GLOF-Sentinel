@@ -62,7 +62,7 @@ function ForgotAndResetPassword() {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/forgot-password', { email });
+      const res = await axios.post('/api/auth/forgot-password', { email });
       setMessage(res.data.message || 'Password reset OTP sent to your email.');
       setMessageType('success');
       setStep('reset');
@@ -86,7 +86,7 @@ function ForgotAndResetPassword() {
     }
     setLoading(true);
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/reset-password', {
+      const res = await axios.post('/api/auth/reset-password', {
         email,
         otp,
         newPassword,

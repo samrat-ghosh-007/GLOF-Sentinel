@@ -25,7 +25,7 @@ function AllLakes() {
         else setFullName("User");
 
         const response = await axios.get(
-          "https://glof-sentinel-backend.onrender.com/api/lakes",
+          "/api/lakes",
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setLakes(response.data);
