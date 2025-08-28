@@ -34,12 +34,10 @@ app.use('/api/auth', require('./routes/authRoutes'));
 
 app.use(express.static(path.join(__dirname, '../Glof-Frontend/dist')));
 
-
-app.get('*', (req, res) => {
-  if (!req.path.startsWith('/api')) {
-    res.sendFile(path.join(__dirname, '../Glof-Frontend/dist/index.html'));
-  }
+app.get(/^\/(?!api).*/, (req, res) => {
+  res.sendFile(path.join(__dirname, '../Glof-Frontend/dist', 'index.html'));
 });
+
 
 
 
