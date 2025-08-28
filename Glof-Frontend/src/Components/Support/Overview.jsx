@@ -50,8 +50,7 @@ function Overview() {
         <div className="flex-1 bg-white/10 backdrop-blur-md rounded-2xl p-8 shadow-xl border border-cyan-400 flex flex-col items-center transition transform hover:scale-105 hover:shadow-2xl">
           <h2 className="text-2xl font-bold text-cyan-200 mb-2">How Does It Work?</h2>
           <ul className="list-disc pl-4 text-cyan-100 mb-2 text-left">
-            <li>Remote monitoring of glacial lakes via sensors and satellites</li>
-            <li>Data-driven risk assessments and forecasting models</li>
+            <li>Remote monitoring of glacial lakes </li>
             <li>Automated alerts sent to authorities and the public</li>
             <li>Community outreach, evacuation plans, and education</li>
           </ul>
