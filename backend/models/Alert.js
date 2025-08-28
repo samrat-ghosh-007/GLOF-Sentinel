@@ -1,21 +1,28 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
-const lakeSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  latitude: { type: Number, required: true },
-  longitude: { type: Number, required: true },
-  temperature: { type: Number, default: 0 },   
-  pressure: { type: Number, default: 0 },
-  rainfall: { type: Number, default: 0 },      
-  humidity: { type: Number, default: 0 },      
-  windSpeed: { type: Number, default: 0 },     
-  volume: { type: Number, default: 0 },        
-  freeboard: { type: Number, default: 0 },     
-  damType: { type: String, default: "unknown" },
-  status: {
-    type: String,
-    enum: ["NORMAL", "WARNING", "CRITICAL"],
-    default: "NORMAL"
+const alertSchema = new mongoose.Schema({
+  lake: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Lake', 
+    required: true
   },
-  lastUpdated: { type: Date, default: Date.now }
-});
+  message: {
+    type: String,
+    required: true
+  },
+  severity: {
+    type: String,
+    enum: ['LOW', 'MEDIUM', 'HIGH'], 
+    required: true
+  },
+  temperature: {
+    type: Number,
+    required: true
+  },
+  pressure: {
+    type: Number,
+    required: true
+  }
+}, { timestamps: true }); 
+
+module.exports = mongoose.model('Alert', alertSchema);

@@ -6,8 +6,8 @@ let staticLakeData = null;
 
 // Caches
 const terrainCache = {};
-const hydroCache = {};      
-const seismicCache = {};    
+const hydroCache = {};
+const seismicCache = {};
 const cacheTTL = {
     hydro: 30 * 60 * 1000,   
     seismic: 24 * 3600 * 1000 
@@ -51,7 +51,6 @@ async function fetchHydroWeather(lake) {
     if (hydroCache[key] && (now - hydroCache[key].ts < cacheTTL.hydro)) return hydroCache[key].data;
 
     try {
-        
         const weatherRes = await axios.get(`https://api.openweathermap.org/data/2.5/weather`, {
             params: { lat: lake.latitude, lon: lake.longitude, appid: process.env.OPENWEATHER_API_KEY, units: 'metric' }
         });
@@ -63,7 +62,6 @@ async function fetchHydroWeather(lake) {
             windSpeed: weatherRes.data.wind?.speed || 0
         };
 
-       
         const hydroRes = await axios.get("https://api.open-meteo.com/v1/forecast", {
             params: {
                 latitude: lake.latitude,
@@ -82,7 +80,11 @@ async function fetchHydroWeather(lake) {
         hydroCache[key] = { ts: now, data };
         return data;
     } catch (err) {
-        console.warn(`Hydro/Weather fetch failed for ${lake.name}:`, err.message);
+        if (err.response?.status === 429) {
+            console.warn(`Rate limit hit for ${lake.name}`);
+        } else {
+            console.warn(`Hydro/Weather fetch failed for ${lake.name}:`, err.message);
+        }
         return { temperature: 0, rainfall: 0, windSpeed: 0, snowfall: 0, snowDepth: 0, riverDischarge: 0, cumulativeRain7d: 0 };
     }
 }
@@ -131,9 +133,9 @@ async function fetchSeismicity(lake, days = 30) {
 function computeAreaChangeRate(history, windowDays=30) {
     const now = Date.now();
     const windowStart = now - windowDays*24*3600*1000;
-    const points = (history||[]).filter(p=>p.surfaceArea!=null && new Date(p.ts).getTime()>=windowStart)
-        .sort((a,b)=>new Date(a.ts)-new Date(b.ts));
-    if(points.length<2) return 0;
+    const points = (history||[]).filter(p => p.surfaceArea != null && new Date(p.ts).getTime() >= windowStart)
+        .sort((a,b) => new Date(a.ts) - new Date(b.ts));
+    if(points.length < 2) return 0;
     const first = points[0], last = points[points.length-1];
     const pct = ((last.surfaceArea-first.surfaceArea)/Math.max(first.surfaceArea,1e-6))*100;
     const days = (new Date(last.ts)-new Date(first.ts))/(24*3600*1000);
@@ -195,7 +197,6 @@ function calculateScore(params) {
 
     return Math.min(Math.max(totalScore, 0), 1);
 }
-
 function getStatus(params) {
     const score = calculateScore(params);
     let status = 'NORMAL';
@@ -204,45 +205,58 @@ function getStatus(params) {
     return { status, confidence: Math.round(score*100) };
 }
 
-// ---- Main function ----
-async function fetchLakeData() {
+// ---- Main function with throttling & batch processing ----
+async function fetchLakeData(batchSize = 5, delayMs = 500) {
     const lakes = await loadStaticLakeData();
+    const cleaned = [];
 
-    const cleaned = await Promise.all(lakes.map(async lake=>{
-        const [hydroWeather, terrain, seismicity] = await Promise.all([
-            fetchHydroWeather(lake),
-            fetchTerrainFactor(lake),
-            fetchSeismicity(lake)
-        ]);
+    for (let i = 0; i < lakes.length; i += batchSize) {
+        const batch = lakes.slice(i, i + batchSize);
 
-        const latestSurfaceArea = lake.surfaceArea || (lake.volume*0.1);
-        lake.history.push({ ts: new Date(), surfaceArea: latestSurfaceArea });
-        if(lake.history.length>180) lake.history.shift();
-        lake.surfaceArea = latestSurfaceArea;
-        lake.areaChangeRate = computeAreaChangeRate(lake.history);
-        lake.shapeFactor = computeShapeFactor(lake.surfaceArea, lake.surfaceArea*4);
-        lake.bathymetryEstimate = estimateBathymetry(lake.volume, lake.surfaceArea);
+        for (const lake of batch) {
+            try {
+                const [hydroWeather, terrain, seismicity] = await Promise.all([
+                    fetchHydroWeather(lake),
+                    fetchTerrainFactor(lake),
+                    fetchSeismicity(lake)
+                ]);
 
-        const params = {
-            ...lake,
-            temperature: hydroWeather.temperature,
-            rainfall: hydroWeather.rainfall,
-            windSpeed: hydroWeather.windSpeed,
-            terrainFactor: terrain,
-            snowDepth: hydroWeather.snowDepth,
-            snowfall: hydroWeather.snowfall,
-            riverDischarge: hydroWeather.riverDischarge,
-            areaChangeRateScore: lake.areaChangeRate/10,
-            glacierProximityScore: 1-Math.min(lake.glacierProximity/10,1),
-            damHeightScore: Math.min(lake.damHeight/30,1),
-            seismicityIndex: seismicity,
-            shapeFactor: lake.shapeFactor,
-            bathymetryEstimate: lake.bathymetryEstimate
-        };
+                const latestSurfaceArea = lake.surfaceArea || (lake.volume*0.1);
+                lake.history.push({ ts: new Date(), surfaceArea: latestSurfaceArea });
+                if(lake.history.length>180) lake.history.shift();
+                lake.surfaceArea = latestSurfaceArea;
+                lake.areaChangeRate = computeAreaChangeRate(lake.history);
+                lake.shapeFactor = computeShapeFactor(lake.surfaceArea, lake.surfaceArea*4);
+                lake.bathymetryEstimate = estimateBathymetry(lake.volume, lake.surfaceArea);
 
-        const { status, confidence } = getStatus(params);
-        return { ...lake, ...hydroWeather, terrainFactor: terrain, status, confidence, lastUpdated: new Date() };
-    }));
+                const params = {
+                    ...lake,
+                    temperature: hydroWeather.temperature,
+                    rainfall: hydroWeather.rainfall,
+                    windSpeed: hydroWeather.windSpeed,
+                    terrainFactor: terrain,
+                    snowDepth: hydroWeather.snowDepth,
+                    snowfall: hydroWeather.snowfall,
+                    riverDischarge: hydroWeather.riverDischarge,
+                    areaChangeRateScore: lake.areaChangeRate/10,
+                    glacierProximityScore: 1-Math.min(lake.glacierProximity/10,1),
+                    damHeightScore: Math.min(lake.damHeight/30,1),
+                    seismicityIndex: seismicity,
+                    shapeFactor: lake.shapeFactor,
+                    bathymetryEstimate: lake.bathymetryEstimate
+                };
+
+                const { status, confidence } = getStatus(params);
+
+                cleaned.push({ ...lake, ...hydroWeather, terrainFactor: terrain, status, confidence, lastUpdated: new Date() });
+
+                await new Promise(r => setTimeout(r, delayMs)); 
+
+            } catch (err) {
+                console.warn(`Failed processing ${lake.name}:`, err.message);
+            }
+        }
+    }
 
     return cleaned;
 }
