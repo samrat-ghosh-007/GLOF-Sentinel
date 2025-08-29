@@ -36,12 +36,12 @@ class FAQ extends Component {
           {
             question: "How does the GLOF Early Warning System work?",
             answer:
-              "Our system uses a network of sensors placed in glacial lakes to monitor water levels, temperature, and seismic activity. When abnormal patterns are detected, the system sends alerts to authorities and communities at risk through multiple channels including SMS, mobile apps, and sirens.",
+              "Our system uses a network of sensors placed in glacial lakes to monitor water levels, temperature, and seismic activity. When abnormal patterns are detected, the system sends alerts to authorities and communities at risk through multiple channels including emails.",
           },
           {
             question: "Which regions are covered by this warning system?",
             answer:
-              "Currently, our system monitors high-risk areas in the Himalayas, Andes, and Alps. We're continuously expanding to other vulnerable regions based on glacial retreat patterns and population density in downstream areas.",
+              "Currently, our system monitors high-risk areas in India. We're continuously expanding to other vulnerable regions based on glacial retreat patterns and population density in downstream areas.",
           },
         ],
       },
@@ -52,7 +52,7 @@ class FAQ extends Component {
           {
             question: "How will I receive GLOF alerts?",
             answer:
-              "You can receive alerts through SMS, email, mobile app notifications, and in some areas, through community warning sirens. You can customize your alert preferences in your account settings.",
+              "You can receive alerts through email and in some areas, through community warning sirens. You will get alert messages based on your region.",
           },
           {
             question: "What should I do when I receive a GLOF alert?",
@@ -78,12 +78,12 @@ class FAQ extends Component {
           {
             question: "What should I do if I'm not receiving alerts?",
             answer:
-              "First, check your account settings to ensure your notification preferences are correctly set. Verify that your contact information is up to date. If problems persist, contact our support team for assistance.",
+              "First, ensure your region is correctly set. Verify that your contact information is up to date. If problems persist, contact our support team for assistance.",
           },
           {
             question: "Is there a mobile app available?",
             answer:
-              "Yes, we have mobile apps for both iOS and Android devices. You can download them from the respective app stores. The app provides real-time alerts, evacuation maps, and educational resources about GLOF risks.",
+              "No, we don't have any mobile app yet, but we are working on that also",
           },
         ],
       },
@@ -94,18 +94,9 @@ class FAQ extends Component {
           {
             question: "How do I create an account?",
             answer:
-              "Click on the 'Sign Up' button on our website or mobile app. You'll need to provide your name, email address, phone number, and the regions you're interested in monitoring. Account registration is free for individuals.",
+              "Click on the 'Sign Up' button on our website or mobile app. You'll need to provide your name, email address and region. Account registration is free for individuals.",
           },
-          {
-            question: "Can I manage alerts for multiple locations?",
-            answer:
-              "Yes, you can add multiple locations to your account. This is particularly useful if you have family in different regions or frequently travel between areas that might be at risk.",
-          },
-          {
-            question: "How do I update my contact information?",
-            answer:
-              "Log into your account, go to 'Profile Settings', and update your contact details. Remember to save your changes. We recommend keeping this information current to ensure you receive important alerts.",
-          },
+          
         ],
       },
     ];
