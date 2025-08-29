@@ -11,6 +11,8 @@ import RecentAlert from "./Components/Support/RecentAlert";
 import ProtectedRoute from "./Components/ProtectedRoute";
 import ForgotAndResetPassword from "./Components/Support/ForgotAndResetPassword";
 import VerifyCode from "./Components/Support/VerifyCode";
+import FAQ from "./Components/Support/FAQ";
+import Documentation from "./Components/Support/Documentation";
 
 function App() {
   return (
@@ -37,6 +39,8 @@ function App() {
         <Route path="/historical-reports" element={<HistoricalReports />} />
         <Route path="/recent-alerts" element={<RecentAlert />} />
         <Route path="/overview" element={<Overview />} />
+        <Route path="/faq" element={<FAQ/>} />
+        <Route path="/doc" element={<Documentation/>} />
       </Routes>
     </Router>
   );
