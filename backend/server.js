@@ -7,6 +7,8 @@ const path = require('path');
 
 
 
+
+
 const connectDB = require('./config/db');
 const updateLakesCore = require('./services/lakeUpdater');
 
@@ -29,6 +31,7 @@ app.use('/api/lakes', require('./routes/lakeRoutes'));
 app.use('/api/alerts', require('./routes/alertRoutes'));
 app.use('/api/auth', require('./routes/authRoutes'));
 
+
 app.use(express.static(path.join(__dirname, '../Glof-Frontend/dist')));
 
 app.get(/^\/(?!api).*/, (req, res) => {
@@ -36,7 +39,9 @@ app.get(/^\/(?!api).*/, (req, res) => {
 });
 
 
-cron.schedule('*/30 * * * *', async () => {
+
+
+cron.schedule('*/14 * * * *', async () => {
   try {
     console.log('Running scheduled lake update...');
     const summary = await updateLakesCore();
