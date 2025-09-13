@@ -41,7 +41,7 @@ app.get(/^\/(?!api).*/, (req, res) => {
 
 
 
-cron.schedule('*/14 * * * *', async () => {
+cron.schedule('*/30 * * * *', async () => {
   try {
     console.log('Running scheduled lake update...');
     const summary = await updateLakesCore();
